@@ -20,4 +20,4 @@ jobs: # 执行的工作
           pip install -r ./requirements.txt 
  
        - name: Run mixue.py
-         run: python mixue.py # 执行py文件    依据自己代码要运行的py情况而定
+         run: python mixue.py

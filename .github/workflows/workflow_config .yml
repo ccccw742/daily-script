@@ -3,7 +3,7 @@ name: Test github actions
 on:
   push:
   schedule:
-    - cron: '*/6 * * * *'  # 每5分钟触发一次
+    - cron: '1 0 * * *'  # 每5分钟触发一次
  
 jobs: # 执行的工作
   run_demo_actions:

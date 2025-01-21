@@ -15,7 +15,7 @@ jobs: # 执行的工作
        - name: Set up Python
          uses: actions/setup-python@v4
          with:
-           python-version: 3.10
+           python-version: 3.14
            
        - name: Install requirements.txt
          run: | # 安装依赖包

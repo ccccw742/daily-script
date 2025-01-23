@@ -3,7 +3,7 @@ name: Test github actions
 on:
   push:
   schedule:
-    - cron: '1 8 * * *'  #utc时间，北京时间大8个小时
+    - cron: '1 12 * * *'  #utc时间，北京时间大8个小时
  
 jobs: # 执行的工作
   run_demo_actions:

@@ -1,6 +1,7 @@
 name: Test github actions
  
 on:
+  push:
   schedule:
     - cron: '20 16 * * *'  #utc时间，北京时间小8个小时，实际16:20+8=24:20
  

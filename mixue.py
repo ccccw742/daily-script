@@ -6,14 +6,14 @@ from hashlib import md5 as md5Encode
 tasks_num = 1 # 运行 100 次
 threads_num = 1 # 最大线程数 30 个
 
-ticket ='0uQBaOVAyaOdG3CUyZ3wLYE9OQdlm7oULFZB7z2kaAA0zTluAzEMQNG7_JoYiJIoUmzT5w5ZJkujAAlSDebuhm34Au8drELStrIVhKWkCquSWrVZCKuRzTRsjNAYHkNYnVTv3WuZtQrLSJ6eEV5IEF5Jm6FtqFt4uLrwTk5hJw_-fv5_3_bHcQofV6-N2fvN-yRRmxG9qLkhfN3db7KclwAAAP__'
+ticket ='DhjrBmIRm_-hF46nMwRLYffZFUWtSSMYDtqnstS-dNU0zTuOwkAMgOG7_LUVjcfxjON2-73DPsKjGSQQVZS7I0Bc4Ps2RiGxqUwFYSipwqikVjUPYRhpruGthUbr0YQxk9q9NFusFmE4ydc3wg8Jwi_pS6g17R49unbhn1QVVnLjdrlf_9ZPsguHJzjXaPYCjyTqS8Rc1LsjnN7wmSz7IwAA__8%3D-fv5_3_bHcQofV6-N2fvN-yRRmxG9qLkhfN3db7KclwAAAP__'
 
 headers = {
     "ticket": ticket,
     'Host': 'energy.xiaojukeji.com',
     'User-Agent': 'iPhone16,1(iOS/17.5.1) DiDiApp(XJCD4iOS/1.6.1) Weex/0.30.0 ExternalUA 1179x2556',
     'Content-type': 'application/json;charset=UTF-8',
-    'wsgsig': 'dd04-/qN3Iwj5VDdpex4Bnf87threzw53PBf2N+60Pd5tm8QVARdSaMfvi8ZbATXuMzvPtO4zY8MXA7X2myHb5vKv1tGo9BkZTD1e5gSUFsfv6BAmcd+8ynzxWsWGBBgwQj0h3Jw1Z+QoBTqT+/Ld3O1qZAGtAN20bSWS'
+    'wsgsig': 'dd04-FzthIVre11tDcCnB5e/ltPe3eS6pqUyPxj8TUF4RpLOo/GwmTlaHjI20fMW7KFnPHnMfY1TSeyVMkDUbruTb1wfjlrn6QHkergC4FvmqirCu9Pv8jgFMXZfOHNC9OFH7kneKXvltey76NYtmigMHD2fjHBgJ8s9'
 }
 
 body = {

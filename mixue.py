@@ -6,7 +6,7 @@ from hashlib import md5 as md5Encode
 tasks_num = 1 # 运行 100 次
 threads_num = 1 # 最大线程数 30 个
 
-ticket ='DhjrBmIRm_-hF46nMwRLYffZFUWtSSMYDtqnstS-dNU0zTuOwkAMgOG7_LUVjcfxjON2-73DPsKjGSQQVZS7I0Bc4Ps2RiGxqUwFYSipwqikVjUPYRhpruGthUbr0YQxk9q9NFusFmE4ydc3wg8Jwi_pS6g17R49unbhn1QVVnLjdrlf_9ZPsguHJzjXaPYCjyTqS8Rc1LsjnN7wmSz7IwAA__8%3D-fv5_3_bHcQofV6-N2fvN-yRRmxG9qLkhfN3db7KclwAAAP__'
+ticket ='DhjrBmIRm_-hF46nMwRLYffZFUWtSSMYDtqnstS-dNU0zTuOwkAMgOG7_LUVjcfxjON2-73DPsKjGSQQVZS7I0Bc4Ps2RiGxqUwFYSipwqikVjUPYRhpruGthUbr0YQxk9q9NFusFmE4ydc3wg8Jwi_pS6g17R49unbhn1QVVnLjdrlf_9ZPsguHJzjXaPYCjyTqS8Rc1LsjnN7wmSz7IwAA__8%3D'
 
 headers = {
     "ticket": ticket,

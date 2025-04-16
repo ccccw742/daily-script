@@ -19,6 +19,7 @@ jobs: # 执行的工作
          uses: actions/setup-python@v3
          with:
            python-version: ${{ matrix.python-version }}
+           architecture: arm64
 
     # steps:
     #    - uses: actions/checkout@v4

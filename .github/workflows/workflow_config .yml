@@ -7,11 +7,11 @@ on:
  
 jobs: # 执行的工作
   run_demo_actions:
-    runs-on: ubuntu-22.04
+    runs-on: linux-22.04
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.14.0"]
+        python-version: ["3.8.13"]
 
     steps:
        - uses: actions/checkout@v3
@@ -19,7 +19,6 @@ jobs: # 执行的工作
          uses: actions/setup-python@v3
          with:
            python-version: ${{ matrix.python-version }}
-           architecture: arm64
 
     # steps:
     #    - uses: actions/checkout@v4

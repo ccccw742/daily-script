@@ -28,4 +28,4 @@ jobs: # 执行的工作
          run: python xiaoju/xiaoju.py
 
        - name: 龙湖天街签到、抽奖
-         run: python lhtj/rūn.py
+         run: python lhtj/run.py

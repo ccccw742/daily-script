@@ -19,17 +19,13 @@ jobs: # 执行的工作
          uses: actions/setup-python@v3
          with:
            python-version: ${{ matrix.python-version }}
-
-    # steps:
-    #    - uses: actions/checkout@v4
-    #    - uses: actions/setup-python@v5
-    #      with:
-    #        python-version: '3.xx'
-    #        architecture: <arm64|x86>
            
        - name: Install requirements.txt
          run: | # 安装依赖包
-          pip install -r ./requirements.txt 
+          pip install -r requirements.txt 
  
-       - name: Run mixue.py
-         run: python mixue.py
+       - name: 小桔签到
+         run: python xiaoju/xiaoju.py
+
+       - name: 龙湖天街签到、抽奖
+         run: python lhtj/rūn.py

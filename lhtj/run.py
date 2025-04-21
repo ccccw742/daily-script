@@ -123,18 +123,21 @@ class LHTJ:
     async def lottery_signin(self, user: Dict) -> None:
         """抽奖签到"""
         try:
-            url = "https://gw2c-hw-open.longfor.com/lmarketing-task-api-mvc-prod/openapi/task/v1/lottery/sign"
+            url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/sign"
             headers = {
                 "cookie": user["cookie"],
                 "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
-                "x-lf-usertoken": user["token"],
-                "x-gaia-api-key": "c06753f1-3e68-437d-b592-b94656ea5517",
-                "x-lf-bu-code": user["x-lf-bu-code"],
-                "x-lf-channel": user["x-lf-channel"],
+                "authtoken": user["token"],
+                "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
+                "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
+                "bucode": user["x-lf-bu-code"],
+                "channel": user["x-lf-channel"],
                 "origin": "https://longzhu.longfor.com",
                 "referer": "https://longzhu.longfor.com/",
+                "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
+                "x-lf-usertoken": user["x-lf-usertoken"],
             }
-            data = {"task_id": "", "activity_no": "11111111111727686365925771280000"}
+            data = {"component_no": "CX19517850Z09MCL", "activity_no": "AP25W033P1KJBXNR"}
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -150,6 +153,42 @@ class LHTJ:
             logger.info(f"{status} 抽奖签到: {msg}")
         except Exception as e:
             logger.error(f"⛔️ 抽奖签到失败: {str(e)}")
+
+        """点击抽奖"""
+        try:
+            url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/click"
+            headers = {
+                "cookie": user["cookie"],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
+                "authtoken": user["token"],
+                "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
+                "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
+                "bucode": user["x-lf-bu-code"],
+                "channel": user["x-lf-channel"],
+                "origin": "https://longzhu.longfor.com",
+                "referer": "https://longzhu.longfor.com/",
+                "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
+                "x-lf-usertoken": user["x-lf-usertoken"],
+            }
+            data = {"component_no": "CX19517850Z09MCL", "activity_no": "AP25W033P1KJBXNR", "batch_no":""}
+
+            res = await self.fetch("POST", url, headers, data)
+            status = (
+                self.do_flag["true"]
+                if res and res.get("code") == "0000"
+                else self.do_flag["false"]
+            )
+            msg = (
+                f"奖励类型:{res.get('data', {}).get('reward_type', 0)}"
+                f"获得{res.get('data', {}).get('reward_num', 0)}个奖励"
+                if res and res.get("code") == "0000"
+                else res.get("message", "")
+            )
+            logger.info(f"{status} 点击抽奖: {msg}")
+        except Exception as e:
+            logger.error(f"⛔️ 点击抽奖失败: {str(e)}")
+
+    
 
     async def run(self):
         """主运行逻辑"""

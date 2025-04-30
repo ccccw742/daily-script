@@ -5,9 +5,9 @@ import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 import asyncio
+import time
 
-
-lhtj_data= '[{\
+lhtj_data = '[{\
     "cookie": "acw_tc=1a0c66d217447896005764345e011a5f760476d63d25749ac699b34b1f2158",\
     "token": "b9d78fcd984f45819974572161790fe6",\
     "x-lf-dxrisk-token":"68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",\
@@ -18,15 +18,26 @@ lhtj_data= '[{\
     }]'
 
 
+lhtj_app_data = '[{\
+    "cookie": "acw_tc=3ccdc15c17459736086126354e7e3d206115aca4ae960941ac3892dcfdde33",\
+    "token": "711a7433304b4655ba7719052e393a65",\
+    "x-lf-dxrisk-token":"68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",\
+    "x-lf-bu-code":"L00602",\
+    "x-lf-channel":"L0",\
+    "x-lf-dxrisk-source":"2",\
+    "x-lf-usertoken":"711a7433304b4655ba7719052e393a65"\
+    }]'
+
+
 # 配置日志
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
 class LHTJ:
-    def __init__(self):
-        self.ck_name = "lhtj_data"
-        self.user_cookie = self.parse_cookies(lhtj_data)
+    def __init__(self,type):
+        self.ck_name = type
+        self.user_cookie = self.parse_cookies(type)
         self.base_url = ""
         self.is_debug = os.getenv("IS_DEBUG", "false").lower() == "true"
         self.do_flag = {"true": "✅", "false": "⛔️"}
@@ -35,7 +46,7 @@ class LHTJ:
         self.title = ""
         self.avatar = ""
 
-    def parse_cookies(self,lhtj_data) -> List[Dict]:
+    def parse_cookies(self, lhtj_data) -> List[Dict]:
         try:
             return json.loads(lhtj_data)
         except json.JSONDecodeError:
@@ -44,8 +55,9 @@ class LHTJ:
     def debug_log(self, data: Any, label: str = "debug") -> None:
         """调试日志"""
         if self.is_debug:
-            logger.info(f"\n-----------{label}-----------\n{json.dumps(data, indent=2, ensure_ascii=False)}\n")
-
+            logger.info(
+                f"\n-----------{label}-----------\n{json.dumps(data, indent=2, ensure_ascii=False)}\n"
+            )
 
     def double_log(self, message: str) -> None:
         """双重记录日志和通知消息"""
@@ -101,6 +113,9 @@ class LHTJ:
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
             data = {"activity_no": "11111111111686241863606037740000"}
+            # app端data数据
+            if(user["x-lf-bu-code"] == 'L00602'):
+                data["activity_no"] = "11111111111736501868255956070000"
             res = await self.fetch("POST", url, headers, data)
             reward_num = (
                 res.get("data", {}).get("reward_info", [{}])[0].get("reward_num", 0)
@@ -122,6 +137,7 @@ class LHTJ:
 
     async def lottery_signin(self, user: Dict) -> None:
         """抽奖签到"""
+        time.sleep(1)
         try:
             url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/sign"
             headers = {
@@ -137,7 +153,14 @@ class LHTJ:
                 "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
-            data = {"component_no": "CX19517850Z09MCL", "activity_no": "AP25W033P1KJBXNR"}
+            data = {
+                "component_no": "CX19517850Z09MCL",
+                "activity_no": "AP25W033P1KJBXNR",
+            }
+            # app端data数据
+            if(user["x-lf-bu-code"] == 'L00602'):
+                data["component_no"] = "CY19A13R3905O6QF"
+                data["activity_no"] = "AP257033I19CA8G8"
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -154,6 +177,7 @@ class LHTJ:
         except Exception as e:
             logger.error(f"⛔️ 抽奖签到失败: {str(e)}")
 
+        time.sleep(1)
         """点击抽奖"""
         try:
             url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/click"
@@ -170,7 +194,16 @@ class LHTJ:
                 "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
-            data = {"component_no": "CX19517850Z09MCL", "activity_no": "AP25W033P1KJBXNR", "batch_no":""}
+            data = {
+                "component_no": "CX19517850Z09MCL",
+                "activity_no": "AP25W033P1KJBXNR",
+                "batch_no": "",
+            }
+            # app端data数据
+            if(user["x-lf-bu-code"] == 'L00602'):
+                data["component_no"] = "CY19A13R3905O6QF"
+                data["activity_no"] = "AP257033I19CA8G8"
+
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -187,8 +220,6 @@ class LHTJ:
             logger.info(f"{status} 点击抽奖: {msg}")
         except Exception as e:
             logger.error(f"⛔️ 点击抽奖失败: {str(e)}")
-
-    
 
     async def run(self):
         """主运行逻辑"""
@@ -215,5 +246,8 @@ class LHTJ:
 
 
 if __name__ == "__main__":
-    client = LHTJ()
+    client = LHTJ(lhtj_data)
+    asyncio.run(client.run())
+    time.sleep(5)
+    client = LHTJ(lhtj_app_data)
     asyncio.run(client.run())

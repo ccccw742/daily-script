@@ -14,12 +14,12 @@ headers = {
     "Origin": "https://creditcardapp.bankcomm.com",
     "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148com.bankcomm.maidanba.V2;mapp_saoma;isApplePayUsable;paypinflag;newVCard;digitalcert;WKWebView;UnionPay/1.0 BoComMDB;buildVersion264;mdbTitleBar;",
     "Referer": "https://creditcardapp.bankcomm.com/pacpAccusTaskcenterWeb/ddySgn/index?channel=00",
-    "Cookie": "JSESSIONID=8D7E02FCDC334C553E01096E729BE3FF"
+    "Cookie": "JSESSIONID=0D8F3A7DCFBAC4B30B250C9F6124B2A2"
 }
 
 data = {
-    "token": "7BD0D554C30A0C803CFCE605F0D32D99",
-    "taskId": "20250408095705000001",
+    "token": "2576CBAC8FCE8C90FD5FB1B01E0876DA",
+    "taskId": "20250429092312000001",
     "channel": "00"
 }
 

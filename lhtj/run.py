@@ -154,13 +154,13 @@ class LHTJ:
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
             data = {
-                "component_no": "CX19517850Z09MCL",
-                "activity_no": "AP25W033P1KJBXNR",
+                "component_no": "CE09006D07089DXJ",
+                "activity_no": "AP25L043J0DCNGRY",
             }
             # app端data数据
             if(user["x-lf-bu-code"] == 'L00602'):
-                data["component_no"] = "CY19A13R3905O6QF"
-                data["activity_no"] = "AP257033I19CA8G8"
+                data["component_no"] = "C909B07I51M2DFWG"
+                data["activity_no"] = "AP256043I0JYSQHX"
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -195,14 +195,14 @@ class LHTJ:
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
             data = {
-                "component_no": "CX19517850Z09MCL",
-                "activity_no": "AP25W033P1KJBXNR",
+                "component_no": "CE09006D07089DXJ",
+                "activity_no": "AP25L043J0DCNGRY",
                 "batch_no": "",
             }
             # app端data数据
             if(user["x-lf-bu-code"] == 'L00602'):
-                data["component_no"] = "CY19A13R3905O6QF"
-                data["activity_no"] = "AP257033I19CA8G8"
+                data["component_no"] = "C909B07I51M2DFWG"
+                data["activity_no"] = "AP256043I0JYSQHX"
 
 
             res = await self.fetch("POST", url, headers, data)

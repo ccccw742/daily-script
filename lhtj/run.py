@@ -8,19 +8,19 @@ import asyncio
 import time
 
 lhtj_data = '[{\
-    "cookie": "acw_tc=1a0c66d217447896005764345e011a5f760476d63d25749ac699b34b1f2158",\
-    "token": "b9d78fcd984f45819974572161790fe6",\
-    "x-lf-dxrisk-token":"68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",\
+    "cookie": "acw_tc=3ccdc14217472700342351816e6089403b6ab1f3e991b84235bbc646ed1671",\
+    "token": "83c8b770b4c14951a073020a146a92c6",\
+    "x-lf-dxrisk-token":"68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",\
     "x-lf-bu-code":"C20400",\
     "x-lf-channel":"C2",\
     "x-lf-dxrisk-source":"5",\
-    "x-lf-usertoken":"b9d78fcd984f45819974572161790fe6"\
+    "x-lf-usertoken":"83c8b770b4c14951a073020a146a92c6"\
     }]'
 
 
 lhtj_app_data = '[{\
-    "cookie": "acw_tc=3ccdc15c17459736086126354e7e3d206115aca4ae960941ac3892dcfdde33",\
-    "token": "711a7433304b4655ba7719052e393a65",\
+    "cookie": "zg_d5bd8e6372844af9b43b8ce5bb74b787=%7B%22sid%22%3A%201747100361151%2C%22updated%22%3A%201747100410221%2C%22info%22%3A%201747031624443%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22https%3A%2F%2Flongzhu.longfor.com%2Flongball-homeh5%2F%23%2FnewGrowthDetail%3FminiShare%3Dfalse%22%2C%22cuid%22%3A%20%22117380909%22%2C%22zs%22%3A%200%2C%22sc%22%3A%200%2C%22firstScreen%22%3A%201747100361151%7D; zg_did=%7B%22did%22%3A%20%22196c3330af7351a-06e90936f886b7-2127594d-51bf4-196c3330af83a78%22%7D; SERVERID=8487eaf0b2f3ef928d0f8a84feaf4f25|1747100409|1747100360; _dx_uzZo5y=b272ddb87d1d5e6a7485ca1a43d949f399c09e036618f375c9bab4f9f53d45194dfa66f6; acw_tc=ac11000117471003605465527e005600c0b5845e3f26a1c5d0853dbb994aee",\
+    "token": "43ddd9d210f3485da606c261a60a4bd4",\
     "x-lf-dxrisk-token":"68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",\
     "x-lf-bu-code":"L00602",\
     "x-lf-channel":"L0",\

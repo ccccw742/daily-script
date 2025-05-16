@@ -7,26 +7,46 @@ from typing import Dict, List, Optional, Any
 import asyncio
 import time
 
-lhtj_data = '[{\
-    "cookie": "acw_tc=3ccdc14217472700342351816e6089403b6ab1f3e991b84235bbc646ed1671",\
-    "token": "83c8b770b4c14951a073020a146a92c6",\
-    "x-lf-dxrisk-token":"68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",\
-    "x-lf-bu-code":"C20400",\
-    "x-lf-channel":"C2",\
-    "x-lf-dxrisk-source":"5",\
-    "x-lf-usertoken":"83c8b770b4c14951a073020a146a92c6"\
-    }]'
 
+vx_sign_data = {
+    "cookie": "acw_tc=b65cfd3d17473628655091819e132bf9112a984c4e8566575c616b94c36baf",
+    "token": "83c8b770b4c14951a073020a146a92c6",
+    "x-lf-dxrisk-token": "68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",
+    "x-lf-bu-code": "C20400",
+    "x-lf-channel": "C2",
+    "x-lf-dxrisk-source": "5",
+    "x-lf-usertoken": "83c8b770b4c14951a073020a146a92c6",
+}
 
-lhtj_app_data = '[{\
-    "cookie": "zg_d5bd8e6372844af9b43b8ce5bb74b787=%7B%22sid%22%3A%201747100361151%2C%22updated%22%3A%201747100410221%2C%22info%22%3A%201747031624443%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22https%3A%2F%2Flongzhu.longfor.com%2Flongball-homeh5%2F%23%2FnewGrowthDetail%3FminiShare%3Dfalse%22%2C%22cuid%22%3A%20%22117380909%22%2C%22zs%22%3A%200%2C%22sc%22%3A%200%2C%22firstScreen%22%3A%201747100361151%7D; zg_did=%7B%22did%22%3A%20%22196c3330af7351a-06e90936f886b7-2127594d-51bf4-196c3330af83a78%22%7D; SERVERID=8487eaf0b2f3ef928d0f8a84feaf4f25|1747100409|1747100360; _dx_uzZo5y=b272ddb87d1d5e6a7485ca1a43d949f399c09e036618f375c9bab4f9f53d45194dfa66f6; acw_tc=ac11000117471003605465527e005600c0b5845e3f26a1c5d0853dbb994aee",\
-    "token": "43ddd9d210f3485da606c261a60a4bd4",\
-    "x-lf-dxrisk-token":"68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",\
-    "x-lf-bu-code":"L00602",\
-    "x-lf-channel":"L0",\
-    "x-lf-dxrisk-source":"2",\
-    "x-lf-usertoken":"711a7433304b4655ba7719052e393a65"\
-    }]'
+vx_lottery_data = {
+    "cookie": "acw_tc=3ccdc14217472700342351816e6089403b6ab1f3e991b84235bbc646ed1671",
+    "token": "83c8b770b4c14951a073020a146a92c6",
+    "x-lf-dxrisk-token": "68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",
+    "x-lf-bu-code": "C20400",
+    "x-lf-channel": "C2",
+    "x-lf-dxrisk-source": "5",
+    "x-lf-usertoken": "83c8b770b4c14951a073020a146a92c6",
+}
+
+app_sign_data = {
+    "cookie": "acw_tc=b65cfd3317473566059447147e6a63599f133e4e0db4800f55401de0acdfbe",
+    "token": "43ddd9d210f3485da606c261a60a4bd4",
+    "x-lf-dxrisk-token": "68268db3sFoKEAA6C5vdOa0xklpTC2l2qBFa5QC1",
+    "x-lf-bu-code": "L00602",
+    "x-lf-channel": "L0",
+    "x-lf-dxrisk-source": "2",
+    "x-lf-usertoken": "43ddd9d210f3485da606c261a60a4bd4",
+}
+
+app_lottery_data = {
+    "cookie": "zg_d5bd8e6372844af9b43b8ce5bb74b787=%7B%22sid%22%3A%201747100361151%2C%22updated%22%3A%201747100410221%2C%22info%22%3A%201747031624443%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22https%3A%2F%2Flongzhu.longfor.com%2Flongball-homeh5%2F%23%2FnewGrowthDetail%3FminiShare%3Dfalse%22%2C%22cuid%22%3A%20%22117380909%22%2C%22zs%22%3A%200%2C%22sc%22%3A%200%2C%22firstScreen%22%3A%201747100361151%7D; zg_did=%7B%22did%22%3A%20%22196c3330af7351a-06e90936f886b7-2127594d-51bf4-196c3330af83a78%22%7D; SERVERID=8487eaf0b2f3ef928d0f8a84feaf4f25|1747100409|1747100360; _dx_uzZo5y=b272ddb87d1d5e6a7485ca1a43d949f399c09e036618f375c9bab4f9f53d45194dfa66f6; acw_tc=ac11000117471003605465527e005600c0b5845e3f26a1c5d0853dbb994aee",
+    "token": "43ddd9d210f3485da606c261a60a4bd4",
+    "x-lf-dxrisk-token": "68009c0ayCvL40AicSqWthKL2tGHUD8PZREfPcv1",
+    "x-lf-bu-code": "L00602",
+    "x-lf-channel": "L0",
+    "x-lf-dxrisk-source": "2",
+    "x-lf-usertoken": "711a7433304b4655ba7719052e393a65",
+}
 
 
 # 配置日志
@@ -35,9 +55,7 @@ logger = logging.getLogger(__name__)
 
 
 class LHTJ:
-    def __init__(self,type):
-        self.ck_name = type
-        self.user_cookie = self.parse_cookies(type)
+    def __init__(self):
         self.base_url = ""
         self.is_debug = os.getenv("IS_DEBUG", "false").lower() == "true"
         self.do_flag = {"true": "✅", "false": "⛔️"}
@@ -46,29 +64,12 @@ class LHTJ:
         self.title = ""
         self.avatar = ""
 
-    def parse_cookies(self, lhtj_data) -> List[Dict]:
-        try:
-            return json.loads(lhtj_data)
-        except json.JSONDecodeError:
-            logger.error("Cookie 数据解析失败")
-
     def debug_log(self, data: Any, label: str = "debug") -> None:
         """调试日志"""
         if self.is_debug:
             logger.info(
                 f"\n-----------{label}-----------\n{json.dumps(data, indent=2, ensure_ascii=False)}\n"
             )
-
-    def double_log(self, message: str) -> None:
-        """双重记录日志和通知消息"""
-        logger.info(message)
-        self.notify_msg.append(message)
-
-    async def send_msg(self, message: str) -> None:
-        """发送通知"""
-        if message:
-            # 此处可添加通知服务集成，如 Telegram、Server 酱等
-            logger.info(f"通知内容：\n{message}")
 
     def get_datetime(self) -> str:
         """获取当前时间字符串"""
@@ -114,9 +115,10 @@ class LHTJ:
             }
             data = {"activity_no": "11111111111686241863606037740000"}
             # app端data数据
-            if(user["x-lf-bu-code"] == 'L00602'):
+            if user["x-lf-bu-code"] == "L00602":
                 data["activity_no"] = "11111111111736501868255956070000"
             res = await self.fetch("POST", url, headers, data)
+            print(res)
             reward_num = (
                 res.get("data", {}).get("reward_info", [{}])[0].get("reward_num", 0)
                 if res and res.get("data", {}).get("is_popup") == 1
@@ -158,7 +160,7 @@ class LHTJ:
                 "activity_no": "AP25L043J0DCNGRY",
             }
             # app端data数据
-            if(user["x-lf-bu-code"] == 'L00602'):
+            if user["x-lf-bu-code"] == "L00602":
                 data["component_no"] = "C909B07I51M2DFWG"
                 data["activity_no"] = "AP256043I0JYSQHX"
 
@@ -200,10 +202,9 @@ class LHTJ:
                 "batch_no": "",
             }
             # app端data数据
-            if(user["x-lf-bu-code"] == 'L00602'):
+            if user["x-lf-bu-code"] == "L00602":
                 data["component_no"] = "C909B07I51M2DFWG"
                 data["activity_no"] = "AP256043I0JYSQHX"
-
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -221,33 +222,34 @@ class LHTJ:
         except Exception as e:
             logger.error(f"⛔️ 点击抽奖失败: {str(e)}")
 
-    async def run(self):
+    async def run(self,type):
         """主运行逻辑"""
-        if not self.user_cookie:
-            logger.error("找不到可用账户")
-            return
-
-        logger.info(f"发现 {len(self.user_cookie)} 个账户\n")
-        for idx, user in enumerate(self.user_cookie):
-            self.notify_msg = []
-            self.ck_status = True
-            logger.info(f"🚀 开始处理第 {idx + 1} 个账户")
-
+        if type==1:
+            logger.info(f"🚀 开始处理微信端签到抽奖")
             try:
-                reward_num = await self.signin(user)
+                reward_num = await self.signin(vx_sign_data)
                 if self.ck_status:
-                    await self.lottery_signin(user)
-                    # 其他任务可以在此添加...
+                    await self.lottery_signin(vx_lottery_data)
 
-                # 示例通知消息
-                self.title = f"本次运行获得 {reward_num} 积分"
             except Exception as e:
                 logger.error(f"账户处理异常: {str(e)}")
 
+        if type==2:
+            logger.info(f"🚀 开始处理app端签到抽奖")
+            try:
+                reward_num = await self.signin(app_sign_data)
+                if self.ck_status:
+                    await self.lottery_signin(app_lottery_data)
+
+            except Exception as e:
+                logger.error(f"账户处理异常: {str(e)}")
+
+            
+
 
 if __name__ == "__main__":
-    client = LHTJ(lhtj_data)
-    asyncio.run(client.run())
+    client = LHTJ()
+    asyncio.run(client.run(1))
     time.sleep(5)
-    client = LHTJ(lhtj_app_data)
-    asyncio.run(client.run())
+    client = LHTJ()
+    asyncio.run(client.run(2))

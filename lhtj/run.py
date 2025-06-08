@@ -227,9 +227,9 @@ class LHTJ:
         if type==1:
             logger.info(f"🚀 开始处理微信端签到抽奖")
             try:
-                # reward_num = await self.signin(vx_sign_data)
-                # if self.ck_status:
-                await self.lottery_signin(vx_lottery_data)
+                reward_num = await self.signin(vx_sign_data)
+                if self.ck_status:
+                    await self.lottery_signin(vx_lottery_data)
 
             except Exception as e:
                 logger.error(f"账户处理异常: {str(e)}")
@@ -237,9 +237,9 @@ class LHTJ:
         if type==2:
             logger.info(f"🚀 开始处理app端签到抽奖")
             try:
-                # reward_num = await self.signin(app_sign_data)
-                # if self.ck_status:
-                await self.lottery_signin(app_lottery_data)
+                reward_num = await self.signin(app_sign_data)
+                if self.ck_status:
+                    await self.lottery_signin(app_lottery_data)
 
             except Exception as e:
                 logger.error(f"账户处理异常: {str(e)}")

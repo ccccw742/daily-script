@@ -156,13 +156,13 @@ class LHTJ:
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
             data = {
-                "component_no": "CR14T05T01P4HSSN",
-                "activity_no": "AP25P053E0MQAECS",
+                "component_no": "C216G18R54O4HQVV",
+                "activity_no": "AP25N062U6LDDSKR",
             }
             # app端data数据
             if user["x-lf-bu-code"] == "L00602":
-                data["component_no"] = "CS14S00348I5DW7H"
-                data["activity_no"] = "AP25P05380JXUM6X"
+                data["component_no"] = "CO15400F29R2ZFJZ"
+                data["activity_no"] = "AP25K062Q6YYQ7FX"
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -197,14 +197,14 @@ class LHTJ:
                 "x-lf-usertoken": user["x-lf-usertoken"],
             }
             data = {
-                "component_no": "CR14T05T01P4HSSN",
-                "activity_no": "AP25P053E0MQAECS",
+                "component_no": "C216G18R54O4HQVV",
+                "activity_no": "AP25N062U6LDDSKR",
                 "batch_no": "",
             }
             # app端data数据
             if user["x-lf-bu-code"] == "L00602":
-                data["component_no"] = "CS14S00348I5DW7H"
-                data["activity_no"] = "AP25P05380JXUM6X"
+                data["component_no"] = "CO15400F29R2ZFJZ"
+                data["activity_no"] = "AP25K062Q6YYQ7FX"
 
             res = await self.fetch("POST", url, headers, data)
             status = (
@@ -222,27 +222,25 @@ class LHTJ:
         except Exception as e:
             logger.error(f"⛔️ 点击抽奖失败: {str(e)}")
 
-    async def run(self,type):
+    async def run(self, type):
         """主运行逻辑"""
-        if type==1:
+        if type == 1:
             logger.info(f"🚀 开始处理微信端签到抽奖")
             try:
                 reward_num = await self.signin(vx_sign_data)
-                await self.lottery_signin(vx_lottery_data)
+                # await self.lottery_signin(vx_lottery_data)
 
             except Exception as e:
                 logger.error(f"账户处理异常: {str(e)}")
 
-        if type==2:
+        if type == 2:
             logger.info(f"🚀 开始处理app端签到抽奖")
             try:
                 reward_num = await self.signin(app_sign_data)
-                await self.lottery_signin(app_lottery_data)
+                # await self.lottery_signin(app_lottery_data)
 
             except Exception as e:
                 logger.error(f"账户处理异常: {str(e)}")
-
-            
 
 
 if __name__ == "__main__":

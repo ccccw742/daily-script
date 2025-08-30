@@ -1,251 +1,272 @@
-import os
-import json
 import requests
-import logging
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-import asyncio
-import time
-
-
-vx_sign_data = {
-    "cookie": "acw_tc=b65cfd3d17473628655091819e132bf9112a984c4e8566575c616b94c36baf",
-    "token": "83c8b770b4c14951a073020a146a92c6",
-    "x-lf-dxrisk-token": "68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",
-    "x-lf-bu-code": "C20400",
-    "x-lf-channel": "C2",
-    "x-lf-dxrisk-source": "5",
-    "x-lf-usertoken": "83c8b770b4c14951a073020a146a92c6",
-}
-
-vx_lottery_data = {
-    "cookie": "acw_tc=3ccdc14217472700342351816e6089403b6ab1f3e991b84235bbc646ed1671",
-    "token": "83c8b770b4c14951a073020a146a92c6",
-    "x-lf-dxrisk-token": "68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",
-    "x-lf-bu-code": "C20400",
-    "x-lf-channel": "C2",
-    "x-lf-dxrisk-source": "5",
-    "x-lf-usertoken": "83c8b770b4c14951a073020a146a92c6",
-}
-
-app_sign_data = {
-    "cookie": "acw_tc=ac11000117515899737436536e0061c43e252e6099f7be969c53eb5f73841f",
-    "token": "3e0a311c11ba4890aeec9af052dcfff9",
-    "x-lf-dxrisk-token": "68672472DlkR3OGBTgZr3eroXIVXOyJSXPPd7hs1",
-    "x-lf-bu-code": "L00602",
-    "x-lf-channel": "L0",
-    "x-lf-dxrisk-source": "2",
-    "x-lf-usertoken": "3e0a311c11ba4890aeec9af052dcfff9",
-}
-
-app_lottery_data = {
-    "cookie": "acw_tc=ac11000117515899737436536e0061c43e252e6099f7be969c53eb5f73841f",
-    "token": "3e0a311c11ba4890aeec9af052dcfff9",
-    "x-lf-dxrisk-token": "6867257f7U6pQ7oS2fVMPO47CaDZr7rL4GKFP7u1",
-    "x-lf-bu-code": "L00602",
-    "x-lf-channel": "L0",
-    "x-lf-dxrisk-source": "2",
-    "x-lf-usertoken": "3e0a311c11ba4890aeec9af052dcfff9",
-}
-
-
-# 配置日志
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-logger = logging.getLogger(__name__)
+import json
+import re
 
 
 class LHTJ:
     def __init__(self):
-        self.base_url = ""
-        self.is_debug = os.getenv("IS_DEBUG", "false").lower() == "true"
-        self.do_flag = {"true": "✅", "false": "⛔️"}
-        self.notify_msg = []
-        self.ck_status = True
-        self.title = ""
-        self.avatar = ""
 
-    def debug_log(self, data: Any, label: str = "debug") -> None:
-        """调试日志"""
-        if self.is_debug:
-            logger.info(
-                f"\n-----------{label}-----------\n{json.dumps(data, indent=2, ensure_ascii=False)}\n"
-            )
+        self.vx_sign_data = {
+            "cookie": "acw_tc=b65cfd3d17473628655091819e132bf9112a984c4e8566575c616b94c36baf",
+            "token": "83c8b770b4c14951a073020a146a92c6",
+            "x-lf-dxrisk-token": "68253980oGhhXUDYEQ7x0lUYKK3xiVqWdgKkagX1",
+            "x-lf-bu-code": "C20400",
+            "x-lf-channel": "C2",
+            "x-lf-dxrisk-source": "5",
+            "x-lf-usertoken": "83c8b770b4c14951a073020a146a92c6",
+        }
 
-    def get_datetime(self) -> str:
-        """获取当前时间字符串"""
-        now = datetime.now()
-        return now.strftime("%Y-%m-%d %H:%M:%S")
+        self.app_sign_data = {
+            "cookie": "acw_tc=ac11000117515899737436536e0061c43e252e6099f7be969c53eb5f73841f",
+            "token": "3e0a311c11ba4890aeec9af052dcfff9",
+            "x-lf-dxrisk-token": "68672472DlkR3OGBTgZr3eroXIVXOyJSXPPd7hs1",
+            "x-lf-bu-code": "L00602",
+            "x-lf-channel": "L0",
+            "x-lf-dxrisk-source": "2",
+            "x-lf-usertoken": "3e0a311c11ba4890aeec9af052dcfff9",
+        }
 
-    async def fetch(
-        self, method: str, url: str, headers: Dict, data: Optional[Dict] = None
-    ) -> Optional[Dict]:
-        """发送 HTTP 请求"""
-        try:
-            full_url = self.base_url + url if url.startswith(("/", ":")) else url
-            kwargs = {"headers": headers, "timeout": 10}
-            if data:
-                kwargs["json"] = data
+        self.app_payload = {
+            "component_no": "CC13243906W86PWT",
+            "activity_no": "AP25E073I0R4BBZR",
+        }
 
-            response = requests.request(method.upper(), full_url, **kwargs)
-            response.raise_for_status()
+        self.vx_payload = {
+            "component_no": "CE13Q42B02A04I6W",
+            "activity_no": "AP25Z07390KXCWDP",
+        }
 
-            self.debug_log(response.json(), url.split("/")[-1])
-            return response.json()
-        except Exception as e:
-            self.ck_status = False
-            logger.error(f"⛔️ 请求失败: {str(e)}")
-            return None
+        # vx页面配置请求头
+        self.pc_vx_headers = {
+            "Host": "gw2c-hw-open.longfor.com",
+            "Connection": "keep-alive",
+            "Content-Length": "21",
+            "content-type": "application/json",
+            "X-LF-Channel": "C2",
+            "X-Gaia-Api-Key": "98717e7a-a039-46af-8143-be7558a089c0",
+            "X-LF-Bucode": "C20400",
+            "X-LONGZHU-Sign": "a6f5d1cb8eeea6ca40e1eacdd495feeb",
+            "X-LONGZHU-TimeStamp": "1754063407615",
+            "X-Client-Type": "microApp",
+            "lmToken": "83c8b770b4c14951a073020a146a92c6",
+            "X-LF-Api-Version": "v1_16_0",
+            "Accept-Encoding": "gzip,compress,br,deflate",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.61(0x18003d32) NetType/4G Language/zh_CN",
+            "Referer": "https://servicewechat.com/wx50282644351869da/462/page-frame.html",
+        }
+        self.pc_vx_payload = {"pageCode": "C2mine"}
 
-    async def signin(self, user: Dict) -> int:
+        # app页面配置请求头
+        self.pc_app_headers = {
+            "Host": "gw2c-hw-open.longfor.com",
+            "Cookie": "acw_tc=ac11000117541560706986202e2b66e5b1a55681834051e223b0e68514cac9",
+            "X-Client-Type": "app",
+            "User-Agent": "com.longfor.supera/1.15.4 iOS/18.5",
+            "X-LF-Api-Version": "v1_15_0",
+            "X-Gaia-Api-Key": "98717e7a-a039-46af-8143-be7558a089c0",
+            "lmToken": "3e0a311c11ba4890aeec9af052dcfff9",
+            "X-LF-Bucode": "L00602",
+            "X-LF-Bundle-id": "com.longfor.supera",
+            "X-LONGZHU-TimeStamp": "1754156071173",
+            "X-LF-Channel": "L0",
+            "Connection": "keep-alive",
+            "X-LF-Stage": "RELEASE",
+            "X-LF-App-Version": "1.15.4",
+            "Authorization": "Bearer 3e0a311c11ba4890aeec9af052dcfff9",
+            "X-LONGZHU-Sign": "9c76672ef84cedc1a5d405d87cc6d3ce",
+            "Accept-Language": "zh-Hans-CN;q=1.0",
+            "Accept": "*/*",
+            "Content-Type": "application/json",
+            "Accept-Encoding": "br;q=1.0, gzip;q=0.9, deflate;q=0.8",
+        }
+        self.pc_app_payload = {"pageCode": "L0mine"}
+
+        # app请求头
+        self.app_headers = {
+            "Host": "gw2c-hw-open.longfor.com",
+            "Referer": "https://llt.longfor.com/",
+            "Cookie": "acw_tc=ac11000117540592386777374e005eb025124a0e2c8f323dd977d9e7227163",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 &MAIAWebKit_iOS_com.longfor.supera_1.15.4_202507032047_Default_3.2.4.9",
+            "bucode": "L00602",
+            "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
+            "channel": "L0",
+            "Origin": "https://llt.longfor.com",
+            "Sec-Fetch-Dest": "empty",
+            "X-LF-DXRisk-Source": "2",
+            "Sec-Fetch-Site": "same-site",
+            "X-LF-DXRisk-Token": "688cd1ecb25X5q1QJLtA5trkQbm9JF8Mz6xaw501",
+            "Connection": "keep-alive",
+            "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "authtoken": "3e0a311c11ba4890aeec9af052dcfff9",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Sec-Fetch-Mode": "cors",
+        }
+
+        # vx请求头
+        self.vx_headers = {
+            "Host": "gw2c-hw-open.longfor.com",
+            "Referer": "https://llt.longfor.com/",
+            "Cookie": "acw_tc=ac11000117540634129032995e0079ea37cf5dd135a26dd73e08b3f885095a",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.61(0x18003d32) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
+            "bucode": "C20400",
+            "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
+            "channel": "C2",
+            "Origin": "https://llt.longfor.com",
+            "Sec-Fetch-Dest": "empty",
+            "X-LF-DXRisk-Source": "5",
+            "Sec-Fetch-Site": "same-site",
+            "X-LF-DXRisk-Token": "688ce2364GtE4R8p77xK7vdW2oHXTIw7D7kYAwy1",
+            "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "authtoken": "83c8b770b4c14951a073020a146a92c6",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Sec-Fetch-Mode": "cors",
+        }
+
+        self.page_info_headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "zh-CN,zh;q=0.9,az;q=0.8",
+            "Connection": "keep-alive",
+            "Origin": "https://llt.longfor.com",
+            "Referer": "https://llt.longfor.com/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            "authtoken": "",
+            "bucode": "",
+            "channel": "",
+            "sec-ch-ua": '"Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
+        }
+
+    # 抽奖操作
+    def lottery(self, headers=None, payload=None):
+        # 签到以及点击抽奖
+        opera = ["sign", "click"]
+        base_url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/"
+        for op in opera:
+            response = requests.post(base_url + op, headers=headers, json=payload)
+            print(response.text)
+
+    def dualLottery(self):
+        self.signin(user=self.app_sign_data)
+        self.lottery(headers=lhtj.app_headers, payload=lhtj.app_payload)
+        self.signin(user=self.vx_sign_data)
+        self.lottery(headers=lhtj.vx_headers, payload=lhtj.vx_payload)
+
+    # 提取activity_no
+    def syncActivityNo(self):
+        url = "https://gw2c-hw-open.longfor.com/supera/member/api/bff/pages/v1_16_0/publicApi/v1/pageConfig"
+        platform = {
+            "app": [self.pc_app_headers, self.pc_app_payload],
+            "vx": [self.pc_vx_headers, self.pc_vx_payload],
+        }
+        for key, value in platform.items():
+            headers, payload = value
+            response = requests.post(url, headers=headers, json=payload)
+            if response.status_code == 200:
+                res_txt = response.text
+                keyword = "会员页抽奖" if key == "app" else "每日抽奖"
+                pattern = rf'"content":\s*"{keyword}".*?"jumpUrl":\s*"(https?://[^"]+)"'
+                match = re.search(pattern, res_txt, re.DOTALL)
+                if match:
+                    jump_url = match.group(1)
+                    print(f"{key}每日抽奖跳转链接: {jump_url}")
+                    # 从jump_url中提取activity_no和page_no
+                    pattern = r"https://llt\.longfor\.com/([^/]+)/([^/]+)/"
+                    match2 = re.search(pattern, jump_url)
+                    if match2:
+                        activity_no = match2.group(1)
+                        page_no = match2.group(2)
+                        print(f"提取到activity_no: {activity_no}和 page_no: {page_no}")
+                        self.activity_no = activity_no
+                        self.page_no = page_no
+                        self.getCompoentNo(key)
+                    else:
+                        print("未能从链接中提取activity_no和page_no")
+                else:
+                    print(f"{key}未找到匹配的每日抽奖内容")
+            else:
+                print(f"{key}获取页面配置失败，状态码: {response.status_code}")
+
+    # 获取component_no，并生成payload文本
+    def getCompoentNo(self, platform_key):
+        cookies = {
+            "acw_tc": "ac11000117541503510351782e1b750611aa96601483c7a176c6d36e5897ee",
+        }
+        params = {
+            "activityNo": self.activity_no,
+            "pageNo": self.page_no,
+        }
+        response = requests.get(
+            "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/page/info",
+            params=params,
+            cookies=cookies,
+            headers=self.page_info_headers,
+        )
+        if response.status_code == 200:
+            info_txt = json.loads(response.text).get("data", {}).get("info")
+            data = json.loads(info_txt)
+            component_no = None
+            for item in data.get("list", []):
+                if item.get("comName") == "turntablecom":
+                    component_no = item.get("data", {}).get("component_no")
+                    print(f"component_no: {component_no}")
+                    self.component_no = component_no
+                    break
+            if component_no:
+                payload_text = (
+                    f"self.{platform_key}_payload = {{\n"
+                    f'    "component_no": "{component_no}",\n'
+                    f'    "activity_no": "{self.activity_no}",\n'
+                    f"}}\n"
+                )
+                print("\n生成payload文本如下：\n")
+                print(payload_text)
+        else:
+            print(f"获取页面信息失败，状态码: {response.status_code}")
+
+    def signin(self, user) -> None:
         """执行签到"""
-        try:
-            url = "https://gw2c-hw-open.longfor.com/lmarketing-task-api-mvc-prod/openapi/task/v1/signature/clock"
-            headers = {
-                "cookie": user["cookie"],
-                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
-                "token": user["token"],
-                "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
-                "x-gaia-api-key": "c06753f1-3e68-437d-b592-b94656ea5517",
-                "x-lf-bu-code": user["x-lf-bu-code"],
-                "x-lf-channel": user["x-lf-channel"],
-                "origin": "https://longzhu.longfor.com",
-                "referer": "https://longzhu.longfor.com/",
-                "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
-                "x-lf-usertoken": user["x-lf-usertoken"],
-            }
-            data = {"activity_no": "11111111111686241863606037740000"}
-            # app端data数据
-            if user["x-lf-bu-code"] == "L00602":
-                data["activity_no"] = "11111111111736501868255956070000"
-            res = await self.fetch("POST", url, headers, data)
-            print(res)
-            reward_num = (
-                res.get("data", {}).get("reward_info", [{}])[0].get("reward_num", 0)
-                if res and res.get("data", {}).get("is_popup") == 1
-                else 0
-            )
-            status = (
-                self.do_flag["true"]
-                if res and res.get("data", {}).get("is_popup") == 1
-                else self.do_flag["false"]
-            )
-            logger.info(
-                f"{status} 每日签到: {'成功，获得' + str(reward_num) + '分' if reward_num else '今日已签到'}"
-            )
-            return reward_num
-        except Exception as e:
-            logger.error(f"⛔️ 签到失败: {str(e)}")
-            return 0
 
-    async def lottery_signin(self, user: Dict) -> None:
-        """抽奖签到"""
-        time.sleep(1)
-        try:
-            url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/sign"
-            headers = {
-                "cookie": user["cookie"],
-                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
-                "authtoken": user["token"],
-                "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
-                "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
-                "bucode": user["x-lf-bu-code"],
-                "channel": user["x-lf-channel"],
-                "origin": "https://longzhu.longfor.com",
-                "referer": "https://longzhu.longfor.com/",
-                "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
-                "x-lf-usertoken": user["x-lf-usertoken"],
-            }
-            data = {
-                "component_no": "C216G18R54O4HQVV",
-                "activity_no": "AP25N062U6LDDSKR",
-            }
-            # app端data数据
-            if user["x-lf-bu-code"] == "L00602":
-                data["component_no"] = "CO15400F29R2ZFJZ"
-                data["activity_no"] = "AP25K062Q6YYQ7FX"
+        url = "https://gw2c-hw-open.longfor.com/lmarketing-task-api-mvc-prod/openapi/task/v1/signature/clock"
+        headers = {
+            "cookie": user["cookie"],
+            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
+            "token": user["token"],
+            "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
+            "x-gaia-api-key": "c06753f1-3e68-437d-b592-b94656ea5517",
+            "x-lf-bu-code": user["x-lf-bu-code"],
+            "x-lf-channel": user["x-lf-channel"],
+            "origin": "https://longzhu.longfor.com",
+            "referer": "https://longzhu.longfor.com/",
+            "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
+            "x-lf-usertoken": user["x-lf-usertoken"],
+        }
+        data = {"activity_no": "11111111111686241863606037740000"}
+        # app端data数据
+        if user["x-lf-bu-code"] == "L00602":
+            data["activity_no"] = "11111111111736501868255956070000"
 
-            res = await self.fetch("POST", url, headers, data)
-            status = (
-                self.do_flag["true"]
-                if res and res.get("code") == "0000"
-                else self.do_flag["false"]
-            )
-            msg = (
-                f"获得{res.get('data', {}).get('ticket_times', 0)}次机会"
-                if res and res.get("code") == "0000"
-                else res.get("message", "")
-            )
-            logger.info(f"{status} 抽奖签到: {msg}")
-        except Exception as e:
-            logger.error(f"⛔️ 抽奖签到失败: {str(e)}")
+        response = requests.post(url, headers=headers, json=data)
+        res = response.json()
 
-        time.sleep(1)
-        """点击抽奖"""
-        try:
-            url = "https://gw2c-hw-open.longfor.com/llt-gateway-prod/api/v1/activity/auth/lottery/click"
-            headers = {
-                "cookie": user["cookie"],
-                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.48(0x18003029) NetType/4G Language/zh_CN miniProgram/wx50282644351869da",
-                "authtoken": user["token"],
-                "x-lf-dxrisk-token": user["x-lf-dxrisk-token"],
-                "x-gaia-api-key": "2f9e3889-91d9-4684-8ff5-24d881438eaf",
-                "bucode": user["x-lf-bu-code"],
-                "channel": user["x-lf-channel"],
-                "origin": "https://longzhu.longfor.com",
-                "referer": "https://longzhu.longfor.com/",
-                "x-lf-dxrisk-source": user["x-lf-dxrisk-source"],
-                "x-lf-usertoken": user["x-lf-usertoken"],
-            }
-            data = {
-                "component_no": "C216G18R54O4HQVV",
-                "activity_no": "AP25N062U6LDDSKR",
-                "batch_no": "",
-            }
-            # app端data数据
-            if user["x-lf-bu-code"] == "L00602":
-                data["component_no"] = "CO15400F29R2ZFJZ"
-                data["activity_no"] = "AP25K062Q6YYQ7FX"
-
-            res = await self.fetch("POST", url, headers, data)
-            status = (
-                self.do_flag["true"]
-                if res and res.get("code") == "0000"
-                else self.do_flag["false"]
-            )
-            msg = (
-                f"奖励类型:{res.get('data', {}).get('reward_type', 0)}"
-                f"获得{res.get('data', {}).get('reward_num', 0)}个奖励"
-                if res and res.get("code") == "0000"
-                else res.get("message", "")
-            )
-            logger.info(f"{status} 点击抽奖: {msg}")
-        except Exception as e:
-            logger.error(f"⛔️ 点击抽奖失败: {str(e)}")
-
-    async def run(self, type):
-        """主运行逻辑"""
-        if type == 1:
-            logger.info(f"🚀 开始处理微信端签到抽奖")
-            try:
-                reward_num = await self.signin(vx_sign_data)
-                # await self.lottery_signin(vx_lottery_data)
-
-            except Exception as e:
-                logger.error(f"账户处理异常: {str(e)}")
-
-        if type == 2:
-            logger.info(f"🚀 开始处理app端签到抽奖")
-            try:
-                reward_num = await self.signin(app_sign_data)
-                # await self.lottery_signin(app_lottery_data)
-
-            except Exception as e:
-                logger.error(f"账户处理异常: {str(e)}")
+        reward_num = (
+            res.get("data", {}).get("reward_info", [{}])[0].get("reward_num", 0)
+            if res and res.get("data", {}).get("is_popup") == 1
+            else 0
+        )
+        status = "✅" if res and res.get("data", {}).get("is_popup") == 1 else "⛔️"
+        print(f"{status} 每日签到: {'成功，获得' + str(reward_num) + '分' if reward_num else '今日已签到'}")
 
 
 if __name__ == "__main__":
-    client = LHTJ()
-    asyncio.run(client.run(1))
-    time.sleep(5)
-    client = LHTJ()
-    asyncio.run(client.run(2))
+    lhtj = LHTJ()
+    lhtj.dualLottery()
+    # lhtj.syncActivityNo()

@@ -2,6 +2,7 @@ import requests
 import json
 import re
 
+
 # 提交测试
 class LHTJ:
     def __init__(self):
@@ -27,13 +28,13 @@ class LHTJ:
         }
 
         self.app_payload = {
-            "component_no": "CC13243906W86PWT",
-            "activity_no": "AP25E073I0R4BBZR",
+            "component_no": "CC16118V10V3U9HA",
+            "activity_no": "AP25F082V945THJE",
         }
 
         self.vx_payload = {
-            "component_no": "CE13Q42B02A04I6W",
-            "activity_no": "AP25Z07390KXCWDP",
+            "component_no": "C114001B57J0XWNC",
+            "activity_no": "AP25F082Y9BE1C8Q",
         }
 
         # vx页面配置请求头
@@ -263,7 +264,9 @@ class LHTJ:
             else 0
         )
         status = "✅" if res and res.get("data", {}).get("is_popup") == 1 else "⛔️"
-        print(f"{status} 每日签到: {'成功，获得' + str(reward_num) + '分' if reward_num else '今日已签到'}")
+        print(
+            f"{status} 每日签到: {'成功，获得' + str(reward_num) + '分' if reward_num else '今日已签到'}"
+        )
 
 
 if __name__ == "__main__":
